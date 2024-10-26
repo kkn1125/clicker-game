@@ -2,7 +2,10 @@ import { Stat } from "./Stat";
 import { Unit } from "./Unit";
 
 export class UnitBuilder<T extends Unit> {
-  static create<U extends Unit>(Class: new (name: string) => U, name: string): UnitBuilder<U> {
+  static create<U extends Unit>(
+    Class: new (name: string) => U,
+    name: string
+  ): UnitBuilder<U> {
     return new UnitBuilder(new Class(name));
   }
 

@@ -5,6 +5,7 @@ import { UnitBuilder } from "@models/UnitBuilder";
 import { GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
 import { Monster } from "@models/Monster";
 import { StatBuilder } from "@models/StatBuilder";
+import { Player } from "@models/Player";
 
 const game = new Game();
 
@@ -33,24 +34,28 @@ const Canvas: React.FC<CanvasProps> = () => {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
 
+      game.player = UnitBuilder.create(Player, "player")
+        .setLocation(6 * UNIT_SIZE, GROUND_LEVEL * 5)
+        .build();
+
       game.addMonster(
         UnitBuilder.create(Monster, "monster")
           .setHp(10)
-          .setLocation(8 * UNIT_SIZE, GROUND_LEVEL * UNIT_SIZE)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
           .setStat(StatBuilder.create().setStr(10).setDex(10).build())
           .build()
       );
       game.addMonster(
         UnitBuilder.create(Monster, "monster")
           .setHp(20)
-          .setLocation(8 * UNIT_SIZE, GROUND_LEVEL * UNIT_SIZE)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
           .setStat(StatBuilder.create().setStr(10).setDex(10).build())
           .build()
       );
       game.addMonster(
         UnitBuilder.create(Monster, "monster")
           .setHp(100)
-          .setLocation(8 * UNIT_SIZE, GROUND_LEVEL * UNIT_SIZE)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
           .setStat(StatBuilder.create().setStr(10).setDex(10).build())
           .build()
       );
@@ -100,7 +105,7 @@ const Canvas: React.FC<CanvasProps> = () => {
         position="absolute"
         top={0}
         left={0}
-        zIndex={1000}
+        zIndex={50}
         component="canvas"
         ref={hitCanvasRef}
       />

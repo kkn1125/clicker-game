@@ -18,14 +18,14 @@ export class HitAnimation {
   }
 
   render(ctx: CanvasRenderingContext2D) {
-    const gameWidth = DIST_SIZE * 15;
-    const gameHeight = DIST_SIZE * 23;
-    
+    const gameWidth = UNIT_SIZE * 15;
+    const gameHeight = window.innerHeight * 0.8;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
+
     // 게임 화면 영역과 주변 배경 그리기
     const adjustedX = centerX - gameWidth / 2 + this.x;
-    const adjustedY = centerY + gameHeight / 2 - this.y - UNIT_SIZE / 2; // GROUND_LEVEL을 고려하여 y 위치 조정
+    const adjustedY = centerY + gameHeight / 2 - this.y - UNIT_SIZE * 1.8; // GROUND_LEVEL을 고려하여 y 위치 조정
 
     ctx.globalAlpha = this.endTime > 0 ? ((this.endTime / 500) * 100) / 100 : 0;
     ctx.font = "32px Arial";
@@ -54,7 +54,11 @@ export class HitAnimation {
       adjustedX + UNIT_SIZE / 2 - textWidth / 2,
       adjustedY
     );
-    ctx.fillText(damageText, adjustedX + UNIT_SIZE / 2 - textWidth / 2, adjustedY);
+    ctx.fillText(
+      damageText,
+      adjustedX + UNIT_SIZE / 2 - textWidth / 2,
+      adjustedY
+    );
     this.y += this.speed;
     this.endTime -= 5;
 

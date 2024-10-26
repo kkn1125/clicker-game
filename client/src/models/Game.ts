@@ -1,29 +1,17 @@
-import {
-  ATTACK_TICK,
-  DIST_SIZE,
-  GROUND_LEVEL,
-  UNIT_SIZE,
-} from "@common/variables";
+import { ATTACK_TICK, GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
 import { HitAnimation } from "./HitAnimation";
 import { Monster } from "./Monster";
 import { Player } from "./Player";
-import { UnitBuilder } from "./UnitBuilder";
-
-
 
 export class Game {
   monsters: Monster[] = [];
-  player: Player;
+  player!: Player;
   hitAnimations: HitAnimation[] = [];
   wave: number = 0;
-  nextWave:number= 1
+  nextWave: number = 1;
   backgroundOffset: number = 0;
 
-  constructor() {
-    this.player = UnitBuilder.create(Player, "player")
-      .setLocation(4 * UNIT_SIZE, GROUND_LEVEL * UNIT_SIZE)
-      .build();
-  }
+  constructor() {}
 
   addMonster(monster: Monster) {
     this.monsters.push(monster);
@@ -34,8 +22,8 @@ export class Game {
   }
 
   renderBackground(ctx: CanvasRenderingContext2D) {
-    const gameWidth = DIST_SIZE * 15;
-    const gameHeight = DIST_SIZE * 23;
+    const gameHeight = window.innerHeight * 0.8;
+    const gameWidth = gameHeight * 9/16;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
@@ -73,7 +61,7 @@ export class Game {
 
     // 바닥 그리기
     const restHeight = (window.innerHeight - gameHeight) / 2;
-    const groundLevel = GROUND_LEVEL * UNIT_SIZE - UNIT_SIZE;
+    const groundLevel = GROUND_LEVEL * 5;
     const groundHeight =
       gameHeight - (centerY + gameHeight / 2 - groundLevel) + restHeight;
     ctx.fillStyle = "brown";
@@ -86,7 +74,11 @@ export class Game {
 
     // 타일 그리기
     for (let i = 0; i < visibleTiles; i++) {
-      const tileX = centerX - gameWidth / 2 + i * tileWidth - (this.backgroundOffset % tileWidth);
+      const tileX =
+        centerX -
+        gameWidth / 2 +
+        i * tileWidth -
+        (this.backgroundOffset % tileWidth);
       ctx.fillRect(
         tileX,
         centerY + gameHeight / 2 - groundLevel,
@@ -120,6 +112,9 @@ export class Game {
       }
       if (monster.isAvailableFightBoundary(this.player)) {
         monster.isFighting = true;
+        // monster.jump();
+      } else {
+        monster.isFighting = false;
       }
       if (monster.isFighting) {
         if (!this.player.attackDelay()) {
@@ -127,6 +122,8 @@ export class Game {
             this.player.attackDelayTime += ATTACK_TICK;
           } else {
             const attackedDamage = this.player.attack(monster);
+            /* 넉백하게되면 공속을 올리는 의미가 없어짐 */
+            // monster.knockback(15, "right");
             this.addHitAnimation(
               attackedDamage,
               monster.location.x,
@@ -140,6 +137,8 @@ export class Game {
           }
         }
       }
+      /* 넉백하게되면 공속을 올리는 의미가 없어짐 */
+      // monster.update();
       monster.render(ctx);
     }
 

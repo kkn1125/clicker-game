@@ -1,6 +1,12 @@
+import {
+  ATTACK_TICK,
+  DIST_SIZE,
+  GRAVITY,
+  GROUND_LEVEL,
+  UNIT_SIZE,
+} from "@common/variables";
 import { v4 } from "uuid";
 import { Stat } from "./Stat";
-import { ATTACK_TICK, DIST_SIZE, UNIT_SIZE } from "@common/variables";
 
 export class Unit {
   id: string;
@@ -19,6 +25,7 @@ export class Unit {
   moveSpeed: number;
   attackSpeed: number;
 
+  color: string;
   stat: Stat;
 
   hp: number;
@@ -27,7 +34,14 @@ export class Unit {
   criticalPercent: number;
   criticalProbability: number;
 
+  velocity: {
+    x: number;
+    y: number;
+  };
+
   isFighting: boolean = false;
+  isKnockedBack: boolean = false;
+  isJumping: boolean = false;
 
   attackDelayTime: number = 0;
 
@@ -36,12 +50,17 @@ export class Unit {
     this.name = name;
     this.stat = Stat.create();
 
+    this.color = "#000000";
+
     this.hp = 100;
     this.maxHp = 100;
     this.guard = 0;
     this.criticalPercent = 0;
     this.criticalProbability = 0;
-
+    this.velocity = {
+      x: 0,
+      y: 0,
+    };
     this.location = {
       x: 0,
       y: 0,
@@ -183,7 +202,7 @@ export class Unit {
   }
 
   moveX(direction: "left" | "right") {
-    if (this.isFighting) return;
+    if (this.isFighting || this.isKnockedBack || this.isJumping) return;
 
     if (direction === "left") {
       this.location.x -= this.moveSpeed;
@@ -194,16 +213,16 @@ export class Unit {
 
   render(ctx: CanvasRenderingContext2D) {
     // 게임 화면 영역과 주변 배경 그리기
-    const gameWidth = DIST_SIZE * 15;
-    const gameHeight = DIST_SIZE * 23;
+    const gameWidth = UNIT_SIZE * 15;
+    const gameHeight = window.innerHeight * 0.8;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
-    ctx.fillStyle = "red";
-    
+    ctx.fillStyle = this.color;
+
     ctx.fillRect(
       centerX - gameWidth / 2 + this.location.x,
-      centerY + gameHeight / 2 - this.location.y,
+      centerY + gameHeight / 2 - this.location.y - this.size.y,
       this.size.x,
       this.size.y
     );
@@ -213,7 +232,8 @@ export class Unit {
       ctx.font = "14px Arial";
       const hp = this.hp.toString();
       const textHeight = ctx.measureText(hp).actualBoundingBoxDescent;
-      const height = centerY + gameHeight / 2 - this.location.y - this.size.y / 2;
+      const height =
+        centerY + gameHeight / 2 - this.location.y - this.size.y*1.8;
       const maxHpBarWidth = this.size.x + 10;
       const hpBarWidth = (this.hp / this.maxHp) * maxHpBarWidth;
       ctx.fillStyle = "gray";
@@ -245,6 +265,41 @@ export class Unit {
         centerX - gameWidth / 2 + this.location.x + this.size.x / 2,
         height + 12
       );
+    }
+  }
+
+  jump() {
+    if (this.location.y === GROUND_LEVEL * UNIT_SIZE) {
+      this.velocity.y = 10; // 점프 초기 속도 설정
+      this.isJumping = true;
+    }
+  }
+
+  knockback(power: number, direction: "left" | "right") {
+    const knockbackPower = direction === "left" ? -power : power;
+
+    // 넉백으로 인한 약간의 점프 효과
+    if (this.location.y === GROUND_LEVEL * UNIT_SIZE) {
+      this.velocity.y = 15;
+      this.isJumping = true;
+    }
+
+    this.location.x += knockbackPower;
+
+    this.isKnockedBack = true;
+  }
+
+  update() {
+    // 중력 적용
+    this.velocity.y -= GRAVITY;
+    this.location.y += this.velocity.y;
+
+    // 바닥에 닿으면 멈추기
+    if (this.location.y <= GROUND_LEVEL * UNIT_SIZE) {
+      this.location.y = GROUND_LEVEL * UNIT_SIZE;
+      this.velocity.y = 0;
+      this.isJumping = false;
+      this.isKnockedBack = false;
     }
   }
 }
