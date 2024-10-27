@@ -74,7 +74,6 @@ export class Unit {
       this.moveSpeed = UNIT_SIZE * 0.05;
       this.attackSpeed = 100;
     } else {
-      console.log(nameOrUnit)
       this.id = nameOrUnit.id;
       this.name = nameOrUnit.name;
       this.stat = Stat.copy(nameOrUnit.stat);

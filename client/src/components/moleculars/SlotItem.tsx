@@ -12,7 +12,7 @@ const SlotItem: React.FC<SlotItemProps> = ({
   image,
   title,
   content,
-  currentValue=0,
+  currentValue = 0,
   handleControl,
 }) => {
   const RECT_SIZE = 40;

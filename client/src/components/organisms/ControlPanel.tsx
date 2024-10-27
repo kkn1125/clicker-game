@@ -6,7 +6,7 @@ import {
   GameDispatchContext,
   GameType,
 } from "@providers/GameContext";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 interface ScrollableProps {
   children: React.ReactNode;
@@ -63,34 +63,42 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
   const gameState = useContext(GameContext);
   const dispatch = useContext(GameDispatchContext);
   const [value, setValue] = useState(0);
+  const [playerStat, setPlayerStat] = useState({ ...gameState.player?.stat });
 
   useEffect(() => {
-    dispatch({ type: GameType.Update });
-  }, [dispatch]);
+    setPlayerStat({ ...gameState.player?.stat });
+  }, [gameState.player]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const update = () => {
-    dispatch({ type: GameType.Update });
-  };
-
   const increaseStr = () => {
     dispatch({ type: GameType.IncreaseStr, payload: 1 });
+    setPlayerStat({ ...gameState.player.stat, str: playerStat.str + 1 });
   };
 
   const increaseDex = () => {
     dispatch({ type: GameType.IncreaseDex, payload: 1 });
+    setPlayerStat({ ...gameState.player.stat, dex: playerStat.dex + 1 });
   };
 
   const increaseInt = () => {
     dispatch({ type: GameType.IncreaseInt, payload: 1 });
+    setPlayerStat({ ...gameState.player.stat, int: playerStat.int + 1 });
   };
 
   const increaseLck = () => {
     dispatch({ type: GameType.IncreaseLck, payload: 1 });
+    setPlayerStat({ ...gameState.player.stat, lck: playerStat.lck + 1 });
   };
+
+  const getStat = useCallback(
+    (stat: keyof typeof gameState.player.stat) => {
+      return playerStat?.[stat] || 0;
+    },
+    [gameState, playerStat]
+  );
 
   return (
     <Paper
@@ -124,28 +132,28 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
               image=''
               title='Strength'
               content='힘이 좋으면 기본 데미지가 증가합니다.'
-              currentValue={gameState.player?.stat.str}
+              currentValue={getStat("str")}
               handleControl={increaseStr}
             />
             <SlotItem
               image=''
               title='Dexterity'
               content='민첩이 좋으면 최소 데미지가 증가합니다.'
-              currentValue={gameState.player?.stat.dex}
+              currentValue={getStat("dex")}
               handleControl={increaseDex}
             />
             <SlotItem
               image=''
               title='Intelligence'
               content='지능이 좋으면 마력이 강해집니다.'
-              currentValue={gameState.player?.stat.int}
+              currentValue={getStat("int")}
               handleControl={increaseInt}
             />
             <SlotItem
               image=''
               title='Luck'
               content='운이 좋으면 획득 경험치가 증가합니다.'
-              currentValue={gameState.player?.stat.lck}
+              currentValue={getStat("lck")}
               handleControl={increaseLck}
             />
           </Stack>

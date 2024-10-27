@@ -33,19 +33,19 @@ const gameReducer = (state: Game, action: GameAction) => {
       if (action.player) {
         state.setPlayer(action.player);
       }
-      return new Game(state);
+      return state;
     case GameType.IncreaseStr:
       state.player.stat.str += action.payload || 0;
-      return new Game(state);
+      return state;
     case GameType.IncreaseDex:
       state.player.stat.dex += action.payload || 0;
-      return new Game(state);
+      return state;
     case GameType.IncreaseInt:
       state.player.stat.int += action.payload || 0;
-      return new Game(state);
+      return state;
     case GameType.IncreaseLck:
       state.player.stat.lck += action.payload || 0;
-      return new Game(state);
+      return state;
   }
 };
 
