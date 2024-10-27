@@ -30,6 +30,9 @@
       "@assets/*": ["src/assets/*"],
       "@router/*": ["src/router/*"],
       "@components/*": ["src/components/*"],
+      "@recoil/*": ["src/recoil/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@providers/*": ["src/providers/*"],
       "@models/*": ["src/models/*"],
       "@/*": ["src/*"]
     }

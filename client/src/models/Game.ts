@@ -1,7 +1,13 @@
-import { ATTACK_TICK, GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
+import {
+  ATTACK_TICK,
+  GROUND_LEVEL,
+  SCREEN_RATIO,
+  UNIT_SIZE,
+} from "@common/variables";
 import { HitAnimation } from "./HitAnimation";
 import { Monster } from "./Monster";
 import { Player } from "./Player";
+import { UnitBuilder } from "./UnitBuilder";
 
 export class Game {
   monsters: Monster[] = [];
@@ -11,7 +17,26 @@ export class Game {
   nextWave: number = 1;
   backgroundOffset: number = 0;
 
-  constructor() {}
+  constructor(game?: Game) {
+    if (game) {
+      this.monsters = [
+        ...game.monsters.map((monster) =>
+          UnitBuilder.copy(Monster, monster).build()
+        ),
+      ];
+      if (game.player) {
+        this.player = UnitBuilder.copy(Player, game.player).build();
+      }
+      this.hitAnimations = [...game.hitAnimations];
+      this.wave = game.wave;
+      this.nextWave = game.nextWave;
+      this.backgroundOffset = game.backgroundOffset;
+    }
+  }
+
+  setPlayer(player: Player) {
+    this.player = player;
+  }
 
   addMonster(monster: Monster) {
     this.monsters.push(monster);
@@ -23,7 +48,7 @@ export class Game {
 
   renderBackground(ctx: CanvasRenderingContext2D) {
     const gameHeight = window.innerHeight * 0.8;
-    const gameWidth = gameHeight * 9/16;
+    const gameWidth = gameHeight * SCREEN_RATIO;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 

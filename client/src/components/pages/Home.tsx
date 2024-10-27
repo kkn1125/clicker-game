@@ -6,7 +6,7 @@ const Home: React.FC = () => {
   return (
     <Stack flex={1}>
       <Canvas />
-      {/* <ControlPanel /> */}
+      <ControlPanel />
     </Stack>
   );
 };

@@ -7,4 +7,8 @@ export class Stat {
   static create() {
     return Object.assign({}, new Stat());
   }
+
+  static copy(stat: Stat) {
+    return Object.assign({}, stat);
+  }
 }

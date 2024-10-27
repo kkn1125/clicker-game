@@ -9,6 +9,13 @@ export class UnitBuilder<T extends Unit> {
     return new UnitBuilder(new Class(name));
   }
 
+  static copy<U extends Unit>(
+    Class: new (name: U) => U,
+    unit: U
+  ): UnitBuilder<U> {
+    return new UnitBuilder(new Class(unit));
+  }
+
   private unitClass: T;
 
   constructor(unitClass: T) {

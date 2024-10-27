@@ -45,33 +45,61 @@ export class Unit {
 
   attackDelayTime: number = 0;
 
-  constructor(name: string) {
-    this.id = v4();
-    this.name = name;
-    this.stat = Stat.create();
+  constructor(nameOrUnit: string|Unit) {
+    if(typeof nameOrUnit === 'string' ){
 
-    this.color = "#000000";
+      this.id = v4();
+      this.name = nameOrUnit;
+      this.stat = Stat.create();
+      this.color = "#000000";
+  
+      this.hp = 100;
+      this.maxHp = 100;
+      this.guard = 0;
+      this.criticalPercent = 0;
+      this.criticalProbability = 0;
+      this.velocity = {
+        x: 0,
+        y: 0,
+      };
+      this.location = {
+        x: 0,
+        y: 0,
+      };
+      this.size = {
+        x: UNIT_SIZE,
+        y: UNIT_SIZE,
+      };
+  
+      this.moveSpeed = UNIT_SIZE * 0.05;
+      this.attackSpeed = 100;
+    } else {
+      console.log(nameOrUnit)
+      this.id = nameOrUnit.id;
+      this.name = nameOrUnit.name;
+      this.stat = Stat.copy(nameOrUnit.stat);
 
-    this.hp = 100;
-    this.maxHp = 100;
-    this.guard = 0;
-    this.criticalPercent = 0;
-    this.criticalProbability = 0;
-    this.velocity = {
-      x: 0,
-      y: 0,
-    };
-    this.location = {
-      x: 0,
-      y: 0,
-    };
-    this.size = {
-      x: UNIT_SIZE,
-      y: UNIT_SIZE,
-    };
-
-    this.moveSpeed = UNIT_SIZE * 0.05;
-    this.attackSpeed = 100;
+      this.color = nameOrUnit.color;
+      this.hp = nameOrUnit.hp;
+      this.maxHp = nameOrUnit.maxHp;
+      this.guard = nameOrUnit.guard;
+      this.criticalPercent = nameOrUnit.criticalPercent;
+      this.criticalProbability = nameOrUnit.criticalProbability;
+      this.velocity = {
+        x: nameOrUnit.velocity.x,
+        y: nameOrUnit.velocity.y,
+      };
+      this.location = {
+        x: nameOrUnit.location.x,
+        y: nameOrUnit.location.y,
+      };
+      this.size = {
+        x: nameOrUnit.size.x,
+        y: nameOrUnit.size.y,
+      };
+      this.moveSpeed = nameOrUnit.moveSpeed;
+      this.attackSpeed = nameOrUnit.attackSpeed;
+    }
   }
 
   setHp(hp: number) {
@@ -156,9 +184,9 @@ export class Unit {
   attack(mob: Unit) {
     const attackedDamage = this.attackedDamage;
     this.attackDelayTime += ATTACK_TICK;
-    console.log(
-      `${this.name}이(가) ${mob.name}에게 ${attackedDamage} 데미지를 주었습니다.`
-    );
+    // console.log(
+    //   `${this.name}이(가) ${mob.name}에게 ${attackedDamage} 데미지를 주었습니다.`
+    // );
     mob.damaged(attackedDamage);
     return attackedDamage;
   }
@@ -190,11 +218,11 @@ export class Unit {
       this.hp = 0;
     }
 
-    console.log(
-      `${this.name}이(가) ${Math.floor(finalDamage)} 데미지를 받았습니다. ${
-        this.hp
-      }가 남았습니다.`
-    );
+    // console.log(
+    //   `${this.name}이(가) ${Math.floor(finalDamage)} 데미지를 받았습니다. ${
+    //     this.hp
+    //   }가 남았습니다.`
+    // );
   }
 
   isAvailableFightBoundary(player: Unit) {
