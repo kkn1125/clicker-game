@@ -4,6 +4,9 @@ export const SCREEN_RATIO = 6 / 9;
 export const UNIT_SIZE = 25 * GAME_RATIO;
 export const DIST_SIZE = UNIT_SIZE;
 export const GROUND_LEVEL = UNIT_SIZE + UNIT_SIZE * 1.2 / GAME_RATIO;
+export const GAME_HEIGHT = 0.9;
+export const SLOT_HEIGHT = 220;
+export const SLOT_IMAGE_SIZE = 40;
 
 export const GAME_TICK = 16;
 // 100 최대

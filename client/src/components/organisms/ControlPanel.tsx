@@ -1,12 +1,9 @@
-import { SCREEN_RATIO } from "@common/variables";
+import { GAME_HEIGHT, SCREEN_RATIO, SLOT_HEIGHT } from "@common/variables";
 import SlotItem from "@components/moleculars/SlotItem";
+import SlotQuest from "@components/moleculars/SlotQuest";
+import { useGame } from "@hooks/useGame";
 import { Box, Paper, Stack, Tab, Tabs } from "@mui/material";
-import {
-  GameContext,
-  GameDispatchContext,
-  GameType,
-} from "@providers/GameContext";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface ScrollableProps {
   children: React.ReactNode;
@@ -14,7 +11,7 @@ interface ScrollableProps {
 const Scrollable = ({ children }: ScrollableProps) => {
   return (
     <Stack
-      height={250}
+      height={SLOT_HEIGHT}
       overflow='auto'
       sx={{
         backgroundColor: "#e9dcba",
@@ -60,52 +57,31 @@ function a11yProps(index: number) {
 
 interface ControlPanelProps {}
 const ControlPanel: React.FC<ControlPanelProps> = () => {
-  const gameState = useContext(GameContext);
-  const dispatch = useContext(GameDispatchContext);
+  const { game, addStr, addDex, addInt, addLck, updateGame } = useGame();
   const [value, setValue] = useState(0);
-  const [playerStat, setPlayerStat] = useState({ ...gameState.player?.stat });
 
   useEffect(() => {
-    setPlayerStat({ ...gameState.player?.stat });
-  }, [gameState.player]);
+    updateGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const increaseStr = () => {
-    dispatch({ type: GameType.IncreaseStr, payload: 1 });
-    setPlayerStat({ ...gameState.player.stat, str: playerStat.str + 1 });
-  };
-
-  const increaseDex = () => {
-    dispatch({ type: GameType.IncreaseDex, payload: 1 });
-    setPlayerStat({ ...gameState.player.stat, dex: playerStat.dex + 1 });
-  };
-
-  const increaseInt = () => {
-    dispatch({ type: GameType.IncreaseInt, payload: 1 });
-    setPlayerStat({ ...gameState.player.stat, int: playerStat.int + 1 });
-  };
-
-  const increaseLck = () => {
-    dispatch({ type: GameType.IncreaseLck, payload: 1 });
-    setPlayerStat({ ...gameState.player.stat, lck: playerStat.lck + 1 });
-  };
-
   const getStat = useCallback(
-    (stat: keyof typeof gameState.player.stat) => {
-      return playerStat?.[stat] || 0;
+    (stat: keyof typeof game.player.stat) => {
+      return game.player?.stat?.[stat] || 0;
     },
-    [gameState, playerStat]
+    [game]
   );
 
   return (
     <Paper
       sx={{
-        width: `calc(80vh * ${SCREEN_RATIO})`,
+        width: `calc(${GAME_HEIGHT * 100}vh * ${SCREEN_RATIO})`,
         position: "absolute",
-        bottom: `calc(100vh / 2 - 80vh / 2)`,
+        bottom: `calc(${(1 - GAME_HEIGHT) * 100}vh / 2)`,
         left: "50%",
         transform: "translateX(-50%)",
         zIndex: 100,
@@ -121,11 +97,30 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
             p: 1,
           },
         }}>
-        <Tab label='Item 1' {...a11yProps(0)} />
-        <Tab label='Item 2' {...a11yProps(1)} />
+        <Tab label='퀘스트' {...a11yProps(0)} />
+        <Tab label='능력치' {...a11yProps(1)} />
+        <Tab label='스킬' {...a11yProps(2)} />
       </Tabs>
 
+      {/* Quest */}
       <CustomTabPanel value={value} index={0}>
+        <Scrollable>
+          <Stack p={2} gap={2}>
+            {game.quests.map((quest) => (
+              <SlotQuest
+                key={quest.title}
+                image={quest.slotImage}
+                title={quest.title}
+                content={quest.description}
+                time={quest.time}
+              />
+            ))}
+          </Stack>
+        </Scrollable>
+      </CustomTabPanel>
+
+      {/* Stat */}
+      <CustomTabPanel value={value} index={1}>
         <Scrollable>
           <Stack p={2} gap={2}>
             <SlotItem
@@ -133,33 +128,35 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
               title='Strength'
               content='힘이 좋으면 기본 데미지가 증가합니다.'
               currentValue={getStat("str")}
-              handleControl={increaseStr}
+              handleControl={addStr}
             />
             <SlotItem
               image=''
               title='Dexterity'
               content='민첩이 좋으면 최소 데미지가 증가합니다.'
               currentValue={getStat("dex")}
-              handleControl={increaseDex}
+              handleControl={addDex}
             />
             <SlotItem
               image=''
               title='Intelligence'
               content='지능이 좋으면 마력이 강해집니다.'
               currentValue={getStat("int")}
-              handleControl={increaseInt}
+              handleControl={addInt}
             />
             <SlotItem
               image=''
               title='Luck'
               content='운이 좋으면 획득 경험치가 증가합니다.'
               currentValue={getStat("lck")}
-              handleControl={increaseLck}
+              handleControl={addLck}
             />
           </Stack>
         </Scrollable>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+
+      {/* Skill */}
+      <CustomTabPanel value={value} index={2}>
         <Scrollable>
           <Stack p={2} gap={2}>
             <SlotItem

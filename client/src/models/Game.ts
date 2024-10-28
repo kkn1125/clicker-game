@@ -1,5 +1,6 @@
 import {
   ATTACK_TICK,
+  GAME_HEIGHT,
   GROUND_LEVEL,
   SCREEN_RATIO,
   UNIT_SIZE,
@@ -8,14 +9,21 @@ import { HitAnimation } from "./HitAnimation";
 import { Monster } from "./Monster";
 import { Player } from "./Player";
 import { UnitBuilder } from "./UnitBuilder";
+import { Quest } from "./Quest";
+import { Upgrade } from "./Upgrade";
 
 export class Game {
+  gameMoney: number = 0;
   monsters: Monster[] = [];
   player!: Player;
   hitAnimations: HitAnimation[] = [];
   wave: number = 0;
   nextWave: number = 1;
   backgroundOffset: number = 0;
+
+  quests: Quest[] = [];
+
+  upgrades: Upgrade[] = [];
 
   constructor(game?: Game) {
     if (game) {
@@ -34,6 +42,34 @@ export class Game {
     }
   }
 
+  addQuest(quest: Quest) {
+    this.quests.push(quest);
+  }
+
+  addUpgrade(upgrade: Upgrade) {
+    this.upgrades.push(upgrade);
+  }
+
+  earnMoney(money: number) {
+    const result = this.gameMoney + money;
+    if (result < 0) {
+      console.warn("Money cannot be negative");
+      return false;
+    }
+    this.gameMoney = result;
+    return true;
+  }
+
+  spendMoney(money: number) {
+    const result = this.gameMoney - money;
+    if (result < 0) {
+      console.warn("Not enough money");
+      return false;
+    }
+    this.gameMoney = result;
+    return true;
+  }
+
   setPlayer(player: Player) {
     this.player = player;
   }
@@ -46,8 +82,21 @@ export class Game {
     this.hitAnimations.push(new HitAnimation(damage, x, y));
   }
 
+  renderMoney(ctx: CanvasRenderingContext2D) {
+    const gameHeight = window.innerHeight * GAME_HEIGHT;
+    const centerY = window.innerHeight / 2;
+    const centerX = window.innerWidth / 2;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.fillText(
+      `💰 ${this.gameMoney.toString()}`,
+      centerX,
+      centerY - gameHeight / 2 + 20
+    );
+  }
+
   renderBackground(ctx: CanvasRenderingContext2D) {
-    const gameHeight = window.innerHeight * 0.8;
+    const gameHeight = window.innerHeight * GAME_HEIGHT;
     const gameWidth = gameHeight * SCREEN_RATIO;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
@@ -167,6 +216,7 @@ export class Game {
       monster.render(ctx);
     }
 
+    this.renderMoney(ctx);
     // this.players.attack(this.monsters[0]);
   }
 }

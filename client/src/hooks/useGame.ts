@@ -1,20 +1,37 @@
-import { GameContext, GameDispatchContext } from "@providers/GameContext";
+import {
+  GameContext,
+  GameDispatchContext,
+  GameType,
+} from "@providers/GameContext";
 import { useContext } from "react";
 
 export const useGame = () => {
-  const game = useContext(GameContext);
+  const { game } = useContext(GameContext);
   const setGame = useContext(GameDispatchContext);
 
-  // const update = useCallback(
-  //   (callback: (game: Game) => void) => {
-  //     setGame((prev: Game) => {
-  //       const newGame = new Game(prev);
-  //       callback(newGame);
-  //       return newGame;
-  //     });
-  //   },
-  //   [setGame]
-  // );
+  const updateGame = () => {
+    setGame({ type: GameType.Update });
+  };
 
-  return { game, /* update */ };
+  const addStr = () => {
+    setGame({ type: GameType.IncreaseStr, stat: 1, money: 10 });
+  };
+
+  const addDex = () => {
+    setGame({ type: GameType.IncreaseDex, stat: 1, money: 10 });
+  };
+
+  const addInt = () => {
+    setGame({ type: GameType.IncreaseInt, stat: 1, money: 10 });
+  };
+
+  const addLck = () => {
+    setGame({ type: GameType.IncreaseLck, stat: 1, money: 10 });
+  };
+
+  const completedQuest = (title: string) => {
+    setGame({ type: GameType.CompletedQuest, title });
+  };
+
+  return { game: game, addStr, addDex, addInt, addLck, updateGame, completedQuest };
 };

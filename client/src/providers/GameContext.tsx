@@ -2,12 +2,14 @@ import { createContext, useReducer } from "react";
 import { Game } from "../models/Game";
 import { Player } from "../models/Player";
 
-const initialState = new Game();
+const initialState = {
+  game: new Game(),
+};
 
-export const GameContext = createContext<Game>(initialState);
-export const GameDispatchContext = createContext<
-  React.Dispatch<GameAction>
->(() => {});
+export const GameContext = createContext<{ game: Game }>(initialState);
+export const GameDispatchContext = createContext<React.Dispatch<GameAction>>(
+  () => {}
+);
 
 export const GameType = {
   Update: "Update",
@@ -16,36 +18,59 @@ export const GameType = {
   IncreaseDex: "IncreaseDex",
   IncreaseInt: "IncreaseInt",
   IncreaseLck: "IncreaseLck",
+  CompletedQuest: "CompletedQuest",
 } as const;
 export type GameType = (typeof GameType)[keyof typeof GameType];
 
 type GameAction = {
   type: GameType;
   player?: Player;
-  payload?: number;
+  stat?: number;
+  money?: number;
+  title?: string;
 };
 
-const gameReducer = (state: Game, action: GameAction) => {
+const gameReducer = (state: { game: Game }, action: GameAction) => {
   switch (action.type) {
     case GameType.Update:
-      return new Game(state);
+      return { ...state };
     case GameType.SetPlayer:
       if (action.player) {
-        state.setPlayer(action.player);
+        state.game.setPlayer(action.player);
       }
-      return state;
+      return { ...state };
     case GameType.IncreaseStr:
-      state.player.stat.str += action.payload || 0;
-      return state;
+      if (action.money && state.game.spendMoney(action.money)) {
+        state.game.player.stat.str += action.stat || 0;
+      }
+      return { ...state };
     case GameType.IncreaseDex:
-      state.player.stat.dex += action.payload || 0;
-      return state;
+      if (action.money && state.game.spendMoney(action.money)) {
+        state.game.player.stat.dex += action.stat || 0;
+      }
+      return { ...state };
     case GameType.IncreaseInt:
-      state.player.stat.int += action.payload || 0;
-      return state;
+      if (action.money && state.game.spendMoney(action.money)) {
+        state.game.player.stat.int += action.stat || 0;
+      }
+      return { ...state };
     case GameType.IncreaseLck:
-      state.player.stat.lck += action.payload || 0;
-      return state;
+      if (action.money && state.game.spendMoney(action.money)) {
+        state.game.player.stat.lck += action.stat || 0;
+      }
+      return { ...state };
+    case GameType.CompletedQuest:
+      if (action.title) {
+        const quest = state.game.quests.find(
+          (quest) => quest.title === action.title
+        );
+        if (quest) {
+          const reward = quest.complete();
+          console.log(reward);
+          state.game.earnMoney(reward);
+        }
+      }
+      return { ...state };
   }
 };
 

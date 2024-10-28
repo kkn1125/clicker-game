@@ -1,4 +1,4 @@
-import { DIST_SIZE, UNIT_SIZE, GROUND_LEVEL } from "@common/variables";
+import { DIST_SIZE, UNIT_SIZE, GROUND_LEVEL, GAME_HEIGHT } from "@common/variables";
 
 export class HitAnimation {
   damage: number;
@@ -19,7 +19,7 @@ export class HitAnimation {
 
   render(ctx: CanvasRenderingContext2D) {
     const gameWidth = UNIT_SIZE * 15;
-    const gameHeight = window.innerHeight * 0.8;
+    const gameHeight = window.innerHeight * GAME_HEIGHT;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 

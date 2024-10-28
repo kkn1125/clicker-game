@@ -1,6 +1,7 @@
 import {
   ATTACK_TICK,
   DIST_SIZE,
+  GAME_HEIGHT,
   GRAVITY,
   GROUND_LEVEL,
   UNIT_SIZE,
@@ -11,6 +12,12 @@ import { Stat } from "./Stat";
 export class Unit {
   id: string;
   name: string;
+
+  level: number = 1;
+  exp: number = 0;
+  maxExp: number = 100;
+
+
 
   location: {
     x: number;
@@ -45,14 +52,13 @@ export class Unit {
 
   attackDelayTime: number = 0;
 
-  constructor(nameOrUnit: string|Unit) {
-    if(typeof nameOrUnit === 'string' ){
-
+  constructor(nameOrUnit: string | Unit) {
+    if (typeof nameOrUnit === "string") {
       this.id = v4();
       this.name = nameOrUnit;
       this.stat = Stat.create();
       this.color = "#000000";
-  
+
       this.hp = 100;
       this.maxHp = 100;
       this.guard = 0;
@@ -70,7 +76,7 @@ export class Unit {
         x: UNIT_SIZE,
         y: UNIT_SIZE,
       };
-  
+
       this.moveSpeed = UNIT_SIZE * 0.05;
       this.attackSpeed = 100;
     } else {
@@ -99,6 +105,22 @@ export class Unit {
       this.moveSpeed = nameOrUnit.moveSpeed;
       this.attackSpeed = nameOrUnit.attackSpeed;
     }
+  }
+
+  addExp(exp: number) {
+    this.exp += exp;
+  }
+
+  calcMaxExp() {
+    this.maxExp = this.level * 100;
+  }
+
+  levelUp() {
+    this.level += 1;
+  }
+
+  setLevel(level: number) {
+    this.level = level;
   }
 
   setHp(hp: number) {
@@ -241,7 +263,7 @@ export class Unit {
   render(ctx: CanvasRenderingContext2D) {
     // 게임 화면 영역과 주변 배경 그리기
     const gameWidth = UNIT_SIZE * 15;
-    const gameHeight = window.innerHeight * 0.8;
+    const gameHeight = window.innerHeight * GAME_HEIGHT;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
@@ -260,7 +282,7 @@ export class Unit {
       const hp = this.hp.toString();
       const textHeight = ctx.measureText(hp).actualBoundingBoxDescent;
       const height =
-        centerY + gameHeight / 2 - this.location.y - this.size.y*1.8;
+        centerY + gameHeight / 2 - this.location.y - this.size.y * 1.8;
       const maxHpBarWidth = this.size.x + 10;
       const hpBarWidth = (this.hp / this.maxHp) * maxHpBarWidth;
       ctx.fillStyle = "gray";
@@ -279,18 +301,19 @@ export class Unit {
         hpBarWidth,
         this.size.y / 3 + 6
       );
+      // hp text
       ctx.lineWidth = 3;
       ctx.strokeStyle = "black";
       ctx.fillStyle = "white";
       ctx.strokeText(
         hp,
         centerX - gameWidth / 2 + this.location.x + this.size.x / 2,
-        height + 12
+        height + 10
       );
       ctx.fillText(
         hp,
         centerX - gameWidth / 2 + this.location.x + this.size.x / 2,
-        height + 12
+        height + 10
       );
     }
   }

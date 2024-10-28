@@ -2,17 +2,18 @@ import { Box, Stack } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 // import { Game } from "@models/Game";
 import { UnitBuilder } from "@models/UnitBuilder";
-import { GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
+import { DEFAULT_SLOT_IMAGE, GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
 import { Monster } from "@models/Monster";
 import { StatBuilder } from "@models/StatBuilder";
 import { Player } from "@models/Player";
 import { useGame } from "@hooks/useGame";
+import { Quest } from "@models/Quest";
 
 // const game = new Game();
 
 interface CanvasProps {}
 const Canvas: React.FC<CanvasProps> = () => {
-  const { game, /* update */ } = useGame();
+  const { game /* update */ } = useGame();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hitCanvasRef = useRef<HTMLCanvasElement>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
@@ -36,35 +37,43 @@ const Canvas: React.FC<CanvasProps> = () => {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
 
-      // update((game) => {
-        game.setPlayer(
-          UnitBuilder.create(Player, "player")
-            .setLocation(6 * UNIT_SIZE, GROUND_LEVEL * 5)
-            .build()
-        );
+      game.addQuest(
+        new Quest({
+          id: "quest",
+          slotImage: DEFAULT_SLOT_IMAGE,
+          title: "퀘스트",
+          description: "퀘스트 설명",
+          reward: 100,
+        })
+      );
 
-        game.addMonster(
-          UnitBuilder.create(Monster, "monster")
-            .setHp(10)
-            .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-            .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-            .build()
-        );
-        game.addMonster(
-          UnitBuilder.create(Monster, "monster")
-            .setHp(20)
-            .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-            .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-            .build()
-        );
-        game.addMonster(
-          UnitBuilder.create(Monster, "monster")
-            .setHp(100)
-            .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-            .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-            .build()
-        );
-      // });
+      game.setPlayer(
+        UnitBuilder.create(Player, "player")
+          .setLocation(6 * UNIT_SIZE, GROUND_LEVEL * 5)
+          .build()
+      );
+
+      game.addMonster(
+        UnitBuilder.create(Monster, "monster")
+          .setHp(10)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
+          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
+          .build()
+      );
+      game.addMonster(
+        UnitBuilder.create(Monster, "monster")
+          .setHp(20)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
+          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
+          .build()
+      );
+      game.addMonster(
+        UnitBuilder.create(Monster, "monster")
+          .setHp(100)
+          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
+          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
+          .build()
+      );
 
       setCtx(ctx);
     }
@@ -88,6 +97,7 @@ const Canvas: React.FC<CanvasProps> = () => {
 
   useEffect(() => {
     let renderGameId: number;
+
     function renderGame() {
       if (ctx && hitCtx) {
         ctx.clearRect(
@@ -100,7 +110,9 @@ const Canvas: React.FC<CanvasProps> = () => {
       }
       renderGameId = requestAnimationFrame(renderGame);
     }
+
     renderGameId = requestAnimationFrame(renderGame);
+
     return () => {
       cancelAnimationFrame(renderGameId);
     };

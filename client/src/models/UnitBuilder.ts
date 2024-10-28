@@ -27,6 +27,11 @@ export class UnitBuilder<T extends Unit> {
     this.unitClass.name = name;
     return this;
   }
+  setLevel(level: number) {
+    if (!this.unitClass) return this;
+    this.unitClass.setLevel(level);
+    return this;
+  }
   setHp(hp: number) {
     if (!this.unitClass) return this;
     this.unitClass.hp = hp;
