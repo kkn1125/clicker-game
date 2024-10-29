@@ -1,7 +1,8 @@
 import { DEFAULT_SLOT_IMAGE } from "@common/variables";
+import { v4 } from "uuid";
+import { Game } from "./Game";
 
 interface QuestProps {
-  id: string;
   slotImage: string;
   title: string;
   description: string;
@@ -17,8 +18,8 @@ export class Quest {
   time: number;
   isCompleted: boolean;
 
-  constructor({ id, slotImage, title, description, time, reward }: QuestProps) {
-    this.id = id;
+  constructor({ slotImage, title, description, time, reward }: QuestProps) {
+    this.id = "quest-" + v4();
     this.slotImage = slotImage || DEFAULT_SLOT_IMAGE;
     this.title = title;
     this.description = description;
@@ -27,8 +28,9 @@ export class Quest {
     this.isCompleted = false;
   }
 
-  complete() {
+  complete(game: Game) {
     this.isCompleted = true;
+    game.earnMoney(this.reward);
     return this.reward;
   }
 

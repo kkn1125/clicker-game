@@ -29,9 +29,5 @@ export const useGame = () => {
     setGame({ type: GameType.IncreaseLck, stat: 1, money: 10 });
   };
 
-  const completedQuest = (title: string) => {
-    setGame({ type: GameType.CompletedQuest, title });
-  };
-
-  return { game: game, addStr, addDex, addInt, addLck, updateGame, completedQuest };
+  return { game: game, addStr, addDex, addInt, addLck, updateGame };
 };

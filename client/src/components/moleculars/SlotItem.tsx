@@ -1,29 +1,29 @@
 import Slot from "@atoms/Slot";
-import { DEFAULT_SLOT_IMAGE, SLOT_IMAGE_SIZE } from "@common/variables";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { SLOT_IMAGE_SIZE } from "@common/variables";
+import { useGame } from "@hooks/useGame";
+import { Upgrade } from "@models/Upgrade";
+import { Button, Stack, Typography } from "@mui/material";
 
 interface SlotItemProps {
-  image: string;
-  title: string;
-  content: string;
-  currentValue: number;
-  handleControl: () => void;
+  upgrade: Upgrade;
 }
-const SlotItem: React.FC<SlotItemProps> = ({
-  image,
-  title,
-  content,
-  currentValue = 0,
-  handleControl,
-}) => {
+const SlotItem: React.FC<SlotItemProps> = ({ upgrade }) => {
+  const { game, updateGame } = useGame();
+
   return (
-    <Slot image={image} title={title} content={content}>
+    <Slot
+      image={upgrade.slotImage}
+      title={upgrade.title}
+      content={upgrade.description}>
       <Stack direction='row' gap={1}>
-        <Typography>{currentValue}</Typography>
+        <Typography>{upgrade.grade}</Typography>
         <Button
           variant='contained'
           size='small'
-          onClick={handleControl}
+          onClick={() => {
+            const result = upgrade.upgrade(game);
+            updateGame();
+          }}
           sx={{ width: SLOT_IMAGE_SIZE, height: SLOT_IMAGE_SIZE, minWidth: 0 }}>
           +1
         </Button>
@@ -31,7 +31,10 @@ const SlotItem: React.FC<SlotItemProps> = ({
           variant='contained'
           size='small'
           onClick={() => {
-            for (let i = 0; i < 10; i++) handleControl();
+            for (let i = 0; i < 10; i++) {
+              upgrade.upgrade(game);
+            }
+            updateGame();
           }}
           sx={{ width: SLOT_IMAGE_SIZE, height: SLOT_IMAGE_SIZE, minWidth: 0 }}>
           +10

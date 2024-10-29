@@ -59,17 +59,7 @@ const gameReducer = (state: { game: Game }, action: GameAction) => {
         state.game.player.stat.lck += action.stat || 0;
       }
       return { ...state };
-    case GameType.CompletedQuest:
-      if (action.title) {
-        const quest = state.game.quests.find(
-          (quest) => quest.title === action.title
-        );
-        if (quest) {
-          const reward = quest.complete();
-          console.log(reward);
-          state.game.earnMoney(reward);
-        }
-      }
+    default:
       return { ...state };
   }
 };

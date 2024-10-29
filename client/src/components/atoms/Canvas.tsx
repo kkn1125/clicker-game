@@ -8,6 +8,7 @@ import { StatBuilder } from "@models/StatBuilder";
 import { Player } from "@models/Player";
 import { useGame } from "@hooks/useGame";
 import { Quest } from "@models/Quest";
+import { Upgrade } from "@models/Upgrade";
 
 // const game = new Game();
 
@@ -37,13 +38,60 @@ const Canvas: React.FC<CanvasProps> = () => {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
 
+      /* Upgrades */
+      game.addUpgrade(
+        new Upgrade({
+          type:'stat',
+          slotImage: DEFAULT_SLOT_IMAGE,
+          name:'str',
+          title: "Strength",
+          description: "힘이 좋으면 기본 데미지가 증가합니다.",
+          price: 100,
+          grade: 0,
+        })
+      );
+      game.addUpgrade(
+        new Upgrade({
+          type:'stat',
+          slotImage: DEFAULT_SLOT_IMAGE,
+          name:'dex',
+          title: "Dexterity",
+          description: "민첩이 좋으면 최소 데미지가 증가합니다.",
+          price: 100,
+          grade: 0,
+        })
+      );
+      game.addUpgrade(
+        new Upgrade({
+          type:'stat',
+          slotImage: DEFAULT_SLOT_IMAGE,
+          name:'int',
+          title: "Intelligence",
+          description: "지능이 좋으면 마력이 강해집니다.",
+          price: 100,
+          grade: 0,
+        })
+      );
+      game.addUpgrade(
+        new Upgrade({
+          type:'stat',
+          slotImage: DEFAULT_SLOT_IMAGE,
+          name:'lck',
+          title: "Luck",
+          description: "운이 좋으면 획득 경험치가 증가합니다.",
+          price: 100,
+          grade: 0,
+        })
+      );
+
+      /* Quests */
       game.addQuest(
         new Quest({
-          id: "quest",
           slotImage: DEFAULT_SLOT_IMAGE,
           title: "퀘스트",
           description: "퀘스트 설명",
           reward: 100,
+          time: 3,
         })
       );
 

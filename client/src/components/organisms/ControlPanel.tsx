@@ -57,7 +57,8 @@ function a11yProps(index: number) {
 
 interface ControlPanelProps {}
 const ControlPanel: React.FC<ControlPanelProps> = () => {
-  const { game, addStr, addDex, addInt, addLck, updateGame } = useGame();
+  const { game, updateGame } = useGame();
+  const [gaugeValue, setGaugeValue] = useState<Record<string, number>>({});
   const [value, setValue] = useState(0);
 
   useEffect(() => {
@@ -69,12 +70,16 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
     setValue(newValue);
   };
 
-  const getStat = useCallback(
-    (stat: keyof typeof game.player.stat) => {
-      return game.player?.stat?.[stat] || 0;
-    },
-    [game]
-  );
+  const handleContinue= (type:string)=>{
+    const id = setInterval(() => {
+      setGaugeValue((prev) => {
+        if (!prev[type]) prev[type] = 0;
+        prev[type] += 10;
+        return prev;
+      });
+    }, 10);
+    return id;
+  }
 
   return (
     <Paper
@@ -106,14 +111,8 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
       <CustomTabPanel value={value} index={0}>
         <Scrollable>
           <Stack p={2} gap={2}>
-            {game.quests.map((quest) => (
-              <SlotQuest
-                key={quest.title}
-                image={quest.slotImage}
-                title={quest.title}
-                content={quest.description}
-                time={quest.time}
-              />
+            {game.quests.map((quest, index) => (
+              <SlotQuest key={quest.title + index} quest={quest} />
             ))}
           </Stack>
         </Scrollable>
@@ -123,34 +122,9 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
       <CustomTabPanel value={value} index={1}>
         <Scrollable>
           <Stack p={2} gap={2}>
-            <SlotItem
-              image=''
-              title='Strength'
-              content='힘이 좋으면 기본 데미지가 증가합니다.'
-              currentValue={getStat("str")}
-              handleControl={addStr}
-            />
-            <SlotItem
-              image=''
-              title='Dexterity'
-              content='민첩이 좋으면 최소 데미지가 증가합니다.'
-              currentValue={getStat("dex")}
-              handleControl={addDex}
-            />
-            <SlotItem
-              image=''
-              title='Intelligence'
-              content='지능이 좋으면 마력이 강해집니다.'
-              currentValue={getStat("int")}
-              handleControl={addInt}
-            />
-            <SlotItem
-              image=''
-              title='Luck'
-              content='운이 좋으면 획득 경험치가 증가합니다.'
-              currentValue={getStat("lck")}
-              handleControl={addLck}
-            />
+            {game.upgrades.map((upgrade, index) => (
+              <SlotItem key={upgrade.title + index} upgrade={upgrade} handleContinue={handleContinue} />
+            ))}
           </Stack>
         </Scrollable>
       </CustomTabPanel>
@@ -159,13 +133,7 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
       <CustomTabPanel value={value} index={2}>
         <Scrollable>
           <Stack p={2} gap={2}>
-            <SlotItem
-              image=''
-              title='Skill'
-              content='스킬을 배워 더 강력한 공격을 할 수 있습니다.'
-              currentValue={0}
-              handleControl={() => {}}
-            />
+            <SlotItem upgrade={game.upgrades[0]} />
           </Stack>
         </Scrollable>
       </CustomTabPanel>

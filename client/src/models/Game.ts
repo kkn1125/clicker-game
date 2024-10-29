@@ -22,7 +22,6 @@ export class Game {
   backgroundOffset: number = 0;
 
   quests: Quest[] = [];
-
   upgrades: Upgrade[] = [];
 
   constructor(game?: Game) {

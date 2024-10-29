@@ -1,29 +1,51 @@
+import { v4 } from "uuid";
 import { Game } from "./Game";
 
-export class Upgrade {
-  id: string;
+interface UpgradeProps {
+  type: string;
   slotImage: string;
+  name: string;
   title: string;
   description: string;
   price: number;
+  grade: number;
+}
+export class Upgrade {
+  id: string;
+  type:string;
+  slotImage: string;
+  name: string;
+  title: string;
+  description: string;
+  price: number;
+  grade: number;
 
-  constructor(
-    id: string,
-    slotImage: string,
-    title: string,
-    description: string,
-    price: number
-  ) {
-    this.id = id;
+  constructor({
+    type,
+    slotImage,
+    name,
+    title,
+    description,
+    price,
+    grade,
+  }: UpgradeProps) {
+    this.id = "upgrade-" + v4();
+    this.type = type;
     this.slotImage = slotImage;
+    this.name = name;
     this.title = title;
     this.description = description;
     this.price = price;
+    this.grade = grade;
   }
 
   upgrade(game: Game) {
     if (game.gameMoney >= this.price) {
       game.gameMoney -= this.price;
+      this.grade += 1;
+      game.player[this.type][this.name] += 1;
+      return true;
     }
+    return false;
   }
 }
