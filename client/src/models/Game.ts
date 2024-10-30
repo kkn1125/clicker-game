@@ -41,6 +41,10 @@ export class Game {
     }
   }
 
+  addWave(wave: Monster[]) {
+    this.monsters.push(...wave);
+  }
+
   addQuest(quest: Quest) {
     this.quests.push(quest);
   }

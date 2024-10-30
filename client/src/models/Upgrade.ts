@@ -1,10 +1,12 @@
 import { v4 } from "uuid";
 import { Game } from "./Game";
+import { Unit } from "./Unit";
+import { Stat } from "./Stat";
 
 interface UpgradeProps {
-  type: string;
+  type: keyof Pick<Unit, "stat">;
   slotImage: string;
-  name: string;
+  name: keyof Stat;
   title: string;
   description: string;
   price: number;
@@ -12,9 +14,9 @@ interface UpgradeProps {
 }
 export class Upgrade {
   id: string;
-  type:string;
+  type: keyof Pick<Unit, "stat">;
   slotImage: string;
-  name: string;
+  name: keyof Stat;
   title: string;
   description: string;
   price: number;
@@ -43,6 +45,7 @@ export class Upgrade {
     if (game.gameMoney >= this.price) {
       game.gameMoney -= this.price;
       this.grade += 1;
+      this.price = Math.floor(this.price * Math.floor(1 + this.grade / 100));
       game.player[this.type][this.name] += 1;
       return true;
     }

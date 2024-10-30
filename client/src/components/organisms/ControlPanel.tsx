@@ -59,6 +59,9 @@ interface ControlPanelProps {}
 const ControlPanel: React.FC<ControlPanelProps> = () => {
   const { game, updateGame } = useGame();
   const [gaugeValue, setGaugeValue] = useState<Record<string, number>>({});
+  const [intervalId, setIntervalId] = useState<
+    Record<string, NodeJS.Timeout | number>
+  >({});
   const [value, setValue] = useState(0);
 
   useEffect(() => {
@@ -66,20 +69,52 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    game.quests.forEach((quest) => {
+      if (quest.isRunning && gaugeValue[quest.id] >= quest.time * 1000) {
+        quest.complete(game);
+        updateGame();
+        setGaugeValue((gaugeValue) => {
+          gaugeValue[quest.id] = 0;
+          return gaugeValue;
+        });
+      }
+    });
+  }, [game, gaugeValue, updateGame, setGaugeValue]);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleContinue= (type:string)=>{
-    const id = setInterval(() => {
-      setGaugeValue((prev) => {
-        if (!prev[type]) prev[type] = 0;
-        prev[type] += 10;
-        return prev;
-      });
-    }, 10);
-    return id;
-  }
+  const handleStart = (id: string) => {
+    if (intervalId[id]) return;
+
+    const intervalLoop = () => {
+      setGaugeValue((prev) => ({
+        ...prev,
+        [id]: (prev[id] || 0) + 10,
+      }));
+    };
+
+    const number = setInterval(intervalLoop, 10);
+
+    setIntervalId((prev) => ({
+      ...prev,
+      [id]: number,
+    }));
+
+    game.quests.find((quest) => quest.id === id)?.start();
+    updateGame();
+  };
+
+  const removeInterval = (id: string) => {
+    if (intervalId[id]) clearInterval(intervalId[id]);
+
+    setIntervalId((prev) => {
+      delete prev[id];
+      return prev;
+    });
+  };
 
   return (
     <Paper
@@ -112,7 +147,14 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
         <Scrollable>
           <Stack p={2} gap={2}>
             {game.quests.map((quest, index) => (
-              <SlotQuest key={quest.title + index} quest={quest} />
+              <SlotQuest
+                key={quest.title + index}
+                quest={quest}
+                gaugeValue={gaugeValue[quest.id]}
+                setGaugeValue={setGaugeValue}
+                // removeInterval={removeInterval}
+                handleStart={handleStart}
+              />
             ))}
           </Stack>
         </Scrollable>
@@ -123,7 +165,7 @@ const ControlPanel: React.FC<ControlPanelProps> = () => {
         <Scrollable>
           <Stack p={2} gap={2}>
             {game.upgrades.map((upgrade, index) => (
-              <SlotItem key={upgrade.title + index} upgrade={upgrade} handleContinue={handleContinue} />
+              <SlotItem key={upgrade.title + index} upgrade={upgrade} />
             ))}
           </Stack>
         </Scrollable>

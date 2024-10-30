@@ -17,6 +17,7 @@ export class Quest {
   reward: number;
   time: number;
   isCompleted: boolean;
+  isRunning: boolean;
 
   constructor({ slotImage, title, description, time, reward }: QuestProps) {
     this.id = "quest-" + v4();
@@ -26,6 +27,7 @@ export class Quest {
     this.reward = reward;
     this.time = time;
     this.isCompleted = false;
+    this.isRunning = false;
   }
 
   complete(game: Game) {
@@ -34,5 +36,11 @@ export class Quest {
     return this.reward;
   }
 
-  unComplete() {}
+  start() {
+    this.isRunning = true;
+  }
+
+  stop() {
+    this.isRunning = false;
+  }
 }

@@ -9,6 +9,7 @@ import { Player } from "@models/Player";
 import { useGame } from "@hooks/useGame";
 import { Quest } from "@models/Quest";
 import { Upgrade } from "@models/Upgrade";
+import { WaveFactory } from "@/entity/waves/factory";
 
 // const game = new Game();
 
@@ -41,46 +42,46 @@ const Canvas: React.FC<CanvasProps> = () => {
       /* Upgrades */
       game.addUpgrade(
         new Upgrade({
-          type:'stat',
+          type: "stat",
           slotImage: DEFAULT_SLOT_IMAGE,
-          name:'str',
+          name: "str",
           title: "Strength",
           description: "힘이 좋으면 기본 데미지가 증가합니다.",
-          price: 100,
-          grade: 0,
+          price: 1,
+          grade: 5,
         })
       );
       game.addUpgrade(
         new Upgrade({
-          type:'stat',
+          type: "stat",
           slotImage: DEFAULT_SLOT_IMAGE,
-          name:'dex',
+          name: "dex",
           title: "Dexterity",
           description: "민첩이 좋으면 최소 데미지가 증가합니다.",
-          price: 100,
-          grade: 0,
+          price: 1,
+          grade: 5,
         })
       );
       game.addUpgrade(
         new Upgrade({
-          type:'stat',
+          type: "stat",
           slotImage: DEFAULT_SLOT_IMAGE,
-          name:'int',
+          name: "int",
           title: "Intelligence",
           description: "지능이 좋으면 마력이 강해집니다.",
-          price: 100,
-          grade: 0,
+          price: 1,
+          grade: 5,
         })
       );
       game.addUpgrade(
         new Upgrade({
-          type:'stat',
+          type: "stat",
           slotImage: DEFAULT_SLOT_IMAGE,
-          name:'lck',
+          name: "lck",
           title: "Luck",
           description: "운이 좋으면 획득 경험치가 증가합니다.",
-          price: 100,
-          grade: 0,
+          price: 1,
+          grade: 5,
         })
       );
 
@@ -91,7 +92,7 @@ const Canvas: React.FC<CanvasProps> = () => {
           title: "퀘스트",
           description: "퀘스트 설명",
           reward: 100,
-          time: 3,
+          time: 1,
         })
       );
 
@@ -101,27 +102,7 @@ const Canvas: React.FC<CanvasProps> = () => {
           .build()
       );
 
-      game.addMonster(
-        UnitBuilder.create(Monster, "monster")
-          .setHp(10)
-          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-          .build()
-      );
-      game.addMonster(
-        UnitBuilder.create(Monster, "monster")
-          .setHp(20)
-          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-          .build()
-      );
-      game.addMonster(
-        UnitBuilder.create(Monster, "monster")
-          .setHp(100)
-          .setLocation(12 * UNIT_SIZE, GROUND_LEVEL * 5)
-          .setStat(StatBuilder.create().setStr(10).setDex(10).build())
-          .build()
-      );
+      game.addWave(WaveFactory());
 
       setCtx(ctx);
     }

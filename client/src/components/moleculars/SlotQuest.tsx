@@ -2,63 +2,24 @@ import Slot from "@atoms/Slot";
 import { useGame } from "@hooks/useGame";
 import { Quest } from "@models/Quest";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-function globalUpdate(setGaugeValue: React.Dispatch<React.SetStateAction<number>>) {
-  
-}
-const data = {
-  isRunning:false,
-}
+// const data = {
+//   isRunning: false,
+// };
 
 interface SlotQuestProps {
   quest: Quest;
-  handleContinue: (type:string) => void; 
+  gaugeValue: number;
+  setGaugeValue: Dispatch<SetStateAction<Record<string, number>>>;
+  // removeInterval: (id: string) => void;
+  handleStart: (id: string) => void;
 }
-const SlotQuest: React.FC<SlotQuestProps> = ({ quest, handleContinue }) => {
-  const { game, updateGame } = useGame();
-  const [gaugeValue, setGaugeValue] = useState(0);
-  const [isRunning, setIsRunning] = useState(data.isRunning);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  const handleStart = () => {
-    if (isRunning) return;
-    setIsRunning(true);
-    const id = handleContinue(quest.type);
-    data.isRunning = true;
-    setIntervalId(id);
-  };
-
-  useEffect(() => {
-    if (gaugeValue >= quest.time * 1000) {
-      quest.complete(game);
-      updateGame();
-      setGaugeValue(0);
-    }
-  }, [game, gaugeValue, quest, updateGame]);
-
-  const handleStop = () => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
-    setIsRunning(false);
-  };
-
-  const handleReset = () => {
-    handleStop();
-    setGaugeValue(0);
-  };
-
-  // 컴포넌트가 언마운트될 때 인터벌 정리
-  useEffect(() => {
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [intervalId]);
-
+const SlotQuest: React.FC<SlotQuestProps> = ({
+  quest,
+  gaugeValue,
+  handleStart,
+}) => {
   return (
     <Slot
       image={quest.slotImage}
@@ -75,10 +36,10 @@ const SlotQuest: React.FC<SlotQuestProps> = ({ quest, handleContinue }) => {
           borderRadius={0.5}>
           <Box
             sx={{
-              width: `${(gaugeValue / (quest.time * 1000)) * 100}%`,
+              width: `${((gaugeValue || 0) / (quest.time * 1000)) * 100}%`,
               height: "100%",
               backgroundColor: (theme) => theme.palette.primary.main,
-              transition: "width 0.1s linear",
+              // transition: "width 0.1s linear",
             }}
           />
           <Typography
@@ -92,19 +53,16 @@ const SlotQuest: React.FC<SlotQuestProps> = ({ quest, handleContinue }) => {
               color: "text.primary",
               whiteSpace: "nowrap",
             }}>
-            {((gaugeValue / (quest.time * 1000)) * 100).toFixed(1)}%
+            {(((gaugeValue || 0) / (quest.time * 1000)) * 100).toFixed(1)}%
           </Typography>
         </Box>
       }>
       <Stack direction='row' gap={1}>
         <Button
           variant='contained'
-          onClick={isRunning ? handleStop : handleStart}
-          color={isRunning ? "error" : "primary"}>
-          {isRunning ? "정지" : "시작"}
-        </Button>
-        <Button variant='outlined' onClick={handleReset} disabled={isRunning}>
-          초기화
+          onClick={quest.isRunning ? undefined : () => handleStart(quest.id)}
+          color={quest.isRunning ? "inherit" : "primary"}>
+          {quest.isRunning ? "진행 중..." : "시작"}
         </Button>
       </Stack>
     </Slot>
