@@ -5,6 +5,7 @@ interface SlotProps {
   image: string;
   title: string;
   content: string;
+  cost: number;
   children: React.ReactNode | React.ReactNode[];
   gauge?: boolean;
   gaugeSlot?: React.ReactNode;
@@ -13,6 +14,7 @@ const Slot: React.FC<SlotProps> = ({
   image,
   title,
   content,
+  cost,
   children,
   gauge = false,
   gaugeSlot,
@@ -39,6 +41,9 @@ const Slot: React.FC<SlotProps> = ({
         <Typography fontWeight={700}>{title}</Typography>
         <Typography variant='caption'>{content}</Typography>
         {gauge && gaugeSlot}
+      </Stack>
+      <Stack direction='row' alignItems='center' gap={1}>
+        <Typography>🪙{cost}</Typography>
       </Stack>
       {children}
     </Paper>

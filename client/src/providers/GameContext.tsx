@@ -34,31 +34,31 @@ const gameReducer = (state: { game: Game }, action: GameAction) => {
   switch (action.type) {
     case GameType.Update:
       return { ...state };
-    case GameType.SetPlayer:
-      if (action.player) {
-        state.game.setPlayer(action.player);
-      }
-      return { ...state };
-    case GameType.IncreaseStr:
-      if (action.money && state.game.spendMoney(action.money)) {
-        state.game.player.stat.str += action.stat || 0;
-      }
-      return { ...state };
-    case GameType.IncreaseDex:
-      if (action.money && state.game.spendMoney(action.money)) {
-        state.game.player.stat.dex += action.stat || 0;
-      }
-      return { ...state };
-    case GameType.IncreaseInt:
-      if (action.money && state.game.spendMoney(action.money)) {
-        state.game.player.stat.int += action.stat || 0;
-      }
-      return { ...state };
-    case GameType.IncreaseLck:
-      if (action.money && state.game.spendMoney(action.money)) {
-        state.game.player.stat.lck += action.stat || 0;
-      }
-      return { ...state };
+    // case GameType.SetPlayer:
+    //   if (action.player) {
+    //     state.game.setPlayer(action.player);
+    //   }
+    //   return { ...state };
+    // case GameType.IncreaseStr:
+    //   if (action.money && state.game.spendMoney(action.money)) {
+    //     state.game.player.stat.str += action.stat || 0;
+    //   }
+    //   return { ...state };
+    // case GameType.IncreaseDex:
+    //   if (action.money && state.game.spendMoney(action.money)) {
+    //     state.game.player.stat.dex += action.stat || 0;
+    //   }
+    //   return { ...state };
+    // case GameType.IncreaseInt:
+    //   if (action.money && state.game.spendMoney(action.money)) {
+    //     state.game.player.stat.int += action.stat || 0;
+    //   }
+    //   return { ...state };
+    // case GameType.IncreaseLck:
+    //   if (action.money && state.game.spendMoney(action.money)) {
+    //     state.game.player.stat.lck += action.stat || 0;
+    //   }
+    //   return { ...state };
     default:
       return { ...state };
   }

@@ -11,6 +11,7 @@ import { Player } from "./Player";
 import { UnitBuilder } from "./UnitBuilder";
 import { Quest } from "./Quest";
 import { Upgrade } from "./Upgrade";
+import { WaveFactory } from "@/entity/waves/factory";
 
 export class Game {
   gameMoney: number = 0;
@@ -20,6 +21,8 @@ export class Game {
   wave: number = 0;
   nextWave: number = 1;
   backgroundOffset: number = 0;
+
+  waves: WaveFactory[] = [];
 
   quests: Quest[] = [];
   upgrades: Upgrade[] = [];
@@ -41,8 +44,13 @@ export class Game {
     }
   }
 
-  addWave(wave: Monster[]) {
-    this.monsters.push(...wave);
+  addMonsters(monsters: Monster[]) {
+    monsters.forEach(this.addMonster.bind(this));
+  }
+
+  addWave(wave: WaveFactory, ...waves: WaveFactory[]) {
+    this.addMonsters(wave);
+    this.waves.push(wave, ...waves);
   }
 
   addQuest(quest: Quest) {
@@ -61,6 +69,10 @@ export class Game {
     }
     this.gameMoney = result;
     return true;
+  }
+
+  getMExp(mexp: number) {
+    this.player.addExp(mexp);
   }
 
   spendMoney(money: number) {
@@ -207,9 +219,20 @@ export class Game {
               monster.location.y
             );
             if (monster.hp === 0) {
+              console.log("mob died:", monster);
+              this.earnMoney(monster.money);
+              this.getMExp(monster.mexp);
               this.monsters = this.monsters.filter((m) => m !== monster);
               this.player.attackDelayTime = 0;
-              this.wave = this.nextWave;
+              console.log("turn:", this.monsters.length);
+              if (this.monsters.length === 0) {
+                const nextWave = this.waves[this.wave];
+                this.wave = this.nextWave;
+                this.nextWave += 1;
+                if (nextWave) {
+                  this.addMonsters([...nextWave]);
+                }
+              }
             }
           }
         }

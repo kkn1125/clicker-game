@@ -1,15 +1,13 @@
 import { Box, Stack } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 // import { Game } from "@models/Game";
-import { UnitBuilder } from "@models/UnitBuilder";
-import { DEFAULT_SLOT_IMAGE, GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
-import { Monster } from "@models/Monster";
-import { StatBuilder } from "@models/StatBuilder";
-import { Player } from "@models/Player";
-import { useGame } from "@hooks/useGame";
-import { Quest } from "@models/Quest";
-import { Upgrade } from "@models/Upgrade";
 import { WaveFactory } from "@/entity/waves/factory";
+import { DEFAULT_SLOT_IMAGE, GROUND_LEVEL, UNIT_SIZE } from "@common/variables";
+import { useGame } from "@hooks/useGame";
+import { Player } from "@models/Player";
+import { Quest } from "@models/Quest";
+import { UnitBuilder } from "@models/UnitBuilder";
+import { Upgrade } from "@models/Upgrade";
 
 // const game = new Game();
 
@@ -102,7 +100,17 @@ const Canvas: React.FC<CanvasProps> = () => {
           .build()
       );
 
-      game.addWave(WaveFactory());
+      game.addWave(
+        WaveFactory({
+          slime: 5,
+        }),
+        WaveFactory({
+          golem: 5,
+        }),
+        WaveFactory({
+          slime: 15,
+        })
+      );
 
       setCtx(ctx);
     }
@@ -143,6 +151,7 @@ const Canvas: React.FC<CanvasProps> = () => {
     renderGameId = requestAnimationFrame(renderGame);
 
     return () => {
+      console.log("initialize:", renderGameId);
       cancelAnimationFrame(renderGameId);
     };
   }, [ctx, game, hitCtx]);
@@ -169,4 +178,4 @@ const Canvas: React.FC<CanvasProps> = () => {
   );
 };
 
-export default Canvas;
+export default memo(Canvas);

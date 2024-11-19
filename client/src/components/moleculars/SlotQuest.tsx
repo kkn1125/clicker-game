@@ -25,6 +25,7 @@ const SlotQuest: React.FC<SlotQuestProps> = ({
       image={quest.slotImage}
       title={quest.title}
       content={quest.description}
+      cost={quest.reward}
       gauge
       gaugeSlot={
         <Box

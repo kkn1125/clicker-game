@@ -43,12 +43,25 @@ export class Upgrade {
 
   upgrade(game: Game) {
     if (game.gameMoney >= this.price) {
+      // console.log("spendMoney:", this.price);
       game.gameMoney -= this.price;
       this.grade += 1;
-      this.price = Math.floor(this.price * Math.floor(1 + this.grade / 100));
+      this.price = Math.ceil((this.price * 11) / 10);
       game.player[this.type][this.name] += 1;
       return true;
     }
     return false;
+  }
+
+  canUpgrade(gameMoney: number) {
+    let cost = this.price;
+    let required = 0;
+
+    for (let i = 0; i < 10; i++) {
+      required += cost;
+      cost = Math.ceil((cost * 11) / 10);
+    }
+    console.log("update cost:", required);
+    return gameMoney >= required;
   }
 }

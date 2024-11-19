@@ -14,14 +14,15 @@ const SlotItem: React.FC<SlotItemProps> = ({ upgrade }) => {
     <Slot
       image={upgrade.slotImage}
       title={upgrade.title}
-      content={upgrade.description}>
-      <Stack direction='row' gap={1}>
-        <Typography>{upgrade.grade}</Typography>
+      content={upgrade.description}
+      cost={upgrade.price}>
+      <Stack direction='row' gap={1} alignItems='center'>
+        <Typography>Lv.{upgrade.grade}</Typography>
         <Button
           variant='contained'
           size='small'
           onClick={() => {
-            const result = upgrade.upgrade(game);
+            upgrade.upgrade(game);
             updateGame();
           }}
           sx={{ width: SLOT_IMAGE_SIZE, height: SLOT_IMAGE_SIZE, minWidth: 0 }}>
@@ -31,10 +32,12 @@ const SlotItem: React.FC<SlotItemProps> = ({ upgrade }) => {
           variant='contained'
           size='small'
           onClick={() => {
-            for (let i = 0; i < 10; i++) {
-              upgrade.upgrade(game);
+            if (upgrade.canUpgrade(game.gameMoney)) {
+              for (let i = 0; i < 10; i++) {
+                upgrade.upgrade(game);
+              }
+              updateGame();
             }
-            updateGame();
           }}
           sx={{ width: SLOT_IMAGE_SIZE, height: SLOT_IMAGE_SIZE, minWidth: 0 }}>
           +10

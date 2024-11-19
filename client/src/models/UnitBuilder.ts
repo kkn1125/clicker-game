@@ -1,3 +1,4 @@
+import { Monster } from "./Monster";
 import { Stat } from "./Stat";
 import { Unit } from "./Unit";
 
@@ -71,6 +72,14 @@ export class UnitBuilder<T extends Unit> {
   setSizeY(y: number) {
     if (!this.unitClass) return this;
     this.unitClass.size.y = y;
+    return this;
+  }
+  setMExp(mexp: number) {
+    (this.unitClass as unknown as Monster).setMExp(mexp);
+    return this;
+  }
+  setMoney(money: number) {
+    (this.unitClass as unknown as Monster).setMoney(money);
     return this;
   }
   build(): T {

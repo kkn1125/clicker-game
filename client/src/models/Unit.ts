@@ -17,8 +17,6 @@ export class Unit {
   exp: number = 0;
   maxExp: number = 100;
 
-
-
   location: {
     x: number;
     y: number;
@@ -109,6 +107,11 @@ export class Unit {
 
   addExp(exp: number) {
     this.exp += exp;
+    if (this.exp > this.maxExp) {
+      this.levelUp();
+    }
+    this.exp -= this.maxExp;
+    this.calcMaxExp();
   }
 
   calcMaxExp() {
