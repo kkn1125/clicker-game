@@ -24,6 +24,7 @@ export default defineConfig(({ command, mode }) => {
       host,
       port,
     },
+    base: process.env.NODE_ENV === "development" ? "/" : "/clicker-game/",
     build: {
       outDir: "dist",
     },

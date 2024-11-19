@@ -1,5 +1,7 @@
 export const VERSION = process.env.VERSION;
 
+export const GAME_HOME = import.meta.env.DEV ? "/" : "/clicker-game/";
+
 // this variable use to unit size and block size
 export const GAME_RATIO = window.devicePixelRatio;
 export const SCREEN_RATIO = 6 / 9;
@@ -20,5 +22,5 @@ export const HEIGHT_RATIO = 13;
 
 /* images */
 export const DEFAULT_SLOT_IMAGE = import.meta.resolve(
-  "/images/default_slot.png"
+  `${GAME_HOME}images/default_slot.png`
 );

@@ -1,5 +1,6 @@
-import { SLOT_IMAGE_SIZE } from "@common/variables";
+import { GAME_HOME, SLOT_IMAGE_SIZE } from "@common/variables";
 import { Box, Paper, Stack, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 interface SlotProps {
   image: string;
@@ -19,6 +20,16 @@ const Slot: React.FC<SlotProps> = ({
   gauge = false,
   gaugeSlot,
 }) => {
+  const imageUrl = useMemo(() => {
+    if (image.startsWith("http")) {
+      return image;
+    }
+    if (image.startsWith("/")) {
+      return GAME_HOME + image.slice(1);
+    }
+    return GAME_HOME + image;
+  }, [image]);
+
   return (
     <Paper
       component={Stack}
@@ -29,7 +40,7 @@ const Slot: React.FC<SlotProps> = ({
       sx={{ backgroundColor: "inherit" }}>
       <Box
         component='img'
-        src={image}
+        src={imageUrl}
         sx={{
           width: SLOT_IMAGE_SIZE,
           height: SLOT_IMAGE_SIZE,
