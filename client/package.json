@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "cd dist && git init && git add -A && git commit -m \"✨ feat: auto deploy to gh pages\" && git push https://github.com/kkn1125/clicker-game.git:gh-pages -f"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
