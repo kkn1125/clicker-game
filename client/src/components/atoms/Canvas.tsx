@@ -95,20 +95,23 @@ const Canvas: React.FC<CanvasProps> = () => {
       );
 
       game.setPlayer(
-        UnitBuilder.create(Player, "player")
+        UnitBuilder.create(Player, "Player")
           .setLocation(6 * UNIT_SIZE, GROUND_LEVEL * 5)
           .build()
       );
 
       game.addWave(
         WaveFactory({
-          slime: 5,
+          slime: 45,
         }),
         WaveFactory({
-          golem: 5,
+          devilGoo: 30,
         }),
         WaveFactory({
-          slime: 15,
+          poisonMushroom: 27,
+        }),
+        WaveFactory({
+          golem: 15,
         })
       );
 

@@ -8,10 +8,11 @@ import {
 } from "@common/variables";
 import { v4 } from "uuid";
 import { Stat } from "./Stat";
+import translate from "@/util/translate";
 
 export class Unit {
   id: string;
-  name: string;
+  name: MonsterType;
 
   level: number = 1;
   exp: number = 0;
@@ -50,7 +51,7 @@ export class Unit {
 
   attackDelayTime: number = 0;
 
-  constructor(nameOrUnit: string | Unit) {
+  constructor(nameOrUnit: MonsterType | Unit) {
     if (typeof nameOrUnit === "string") {
       this.id = v4();
       this.name = nameOrUnit;
@@ -279,11 +280,32 @@ export class Unit {
       this.size.y
     );
 
-    if (this.constructor.name !== "Player") {
+    if (this.constructor.name === "Monster") {
+      ctx.textAlign = "center";
+      ctx.font = "bold 14px Arial";
+      const name = translate(this.name);
+      const height =
+        centerY + gameHeight / 2 - this.location.y - this.size.y * 1.8;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "black";
+      ctx.fillStyle = "white";
+      ctx.strokeText(
+        name,
+        centerX - gameWidth / 2 + this.location.x + this.size.x / 2,
+        height + 10
+      );
+      ctx.fillText(
+        name,
+        centerX - gameWidth / 2 + this.location.x + this.size.x / 2,
+        height + 10
+      );
+    }
+
+    if (this.constructor.name !== "Monster") {
       ctx.textAlign = "center";
       ctx.font = "14px Arial";
       const hp = this.hp.toString();
-      const textHeight = ctx.measureText(hp).actualBoundingBoxDescent;
+      // const textHeight = ctx.measureText(hp).actualBoundingBoxDescent;
       const height =
         centerY + gameHeight / 2 - this.location.y - this.size.y * 1.8;
       const maxHpBarWidth = this.size.x + 10;

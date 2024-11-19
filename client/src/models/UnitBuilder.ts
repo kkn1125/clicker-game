@@ -4,8 +4,8 @@ import { Unit } from "./Unit";
 
 export class UnitBuilder<T extends Unit> {
   static create<U extends Unit>(
-    Class: new (name: string) => U,
-    name: string
+    Class: new (name: MonsterType) => U,
+    name: MonsterType
   ): UnitBuilder<U> {
     return new UnitBuilder(new Class(name));
   }
@@ -23,7 +23,7 @@ export class UnitBuilder<T extends Unit> {
     this.unitClass = unitClass;
   }
 
-  setName(name: string) {
+  setName(name: MonsterType) {
     if (!this.unitClass) return this;
     this.unitClass.name = name;
     return this;

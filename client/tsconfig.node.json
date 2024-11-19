@@ -5,6 +5,7 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "outDir": "dist",
 
     /* Bundler mode */
     "moduleResolution": "Node",
@@ -15,8 +16,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["vite.config.ts"]

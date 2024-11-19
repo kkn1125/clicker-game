@@ -24,6 +24,9 @@ export default defineConfig(({ command, mode }) => {
       host,
       port,
     },
+    build: {
+      outDir: "dist",
+    },
     plugins: [react(), tsconfigPaths()],
   };
 });
